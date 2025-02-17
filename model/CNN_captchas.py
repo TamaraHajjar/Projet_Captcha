@@ -7,27 +7,37 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms, models
 
+# Set device (CPU or GPU)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+cpudevice = torch.device("cpu")  # move to the CPU
+
 # Define Data Transformations: Utilize torchvision.transforms for data augmentation and normalization.
 transform = transforms.Compose([
     transforms.Resize((32, 32)),
-    transforms.RandomHorizontalFlip(),
-    transforms.RandomRotation(10), # ici je dois voir si je peux faire des rotations dans un intervalle, dont les valeurs sont celles utilisées par les concepteurs de ABACUS
+    #transforms.RandomHorizontalFlip(),
+    transforms.RandomRotation(12), # ici je dois voir si je peux faire des rotations dans un intervalle, dont les valeurs sont celles utilisées par les concepteurs de ABACUS
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+    #transforms.ColorJitter(brightness=0.5, contrast=1, saturation=0.1, hue=0.5),
+    #transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
 ])
 
 #Prepare the Dataset: Use ImageFolder to load your dataset, ensuring it's organized into subdirectories for each class.
-dataset = datasets.ImageFolder(root='path_to_dataset', transform=transform)
+ds_path = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_UM_augmented_with_fct/"
+dataset = datasets.ImageFolder(root=ds_path, transform=transform)
 train_size = int(0.8 * len(dataset))
 val_size = len(dataset) - train_size
 train_dataset, val_dataset = torch.utils.data.random_split(dataset, [train_size, val_size])
 
 #Create Data Loaders:
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=64, shuffle=False)
 
+#Define the number of CAPTCHA categories
+num_classes = 23
 #Load Pre-trained VGG16 Model:
-model = models.vgg16(pretrained=True)
+  
+model = models.vgg16(weights=models.VGG16_Weights.DEFAULT)
 for param in model.parameters():
     param.requires_grad = False
 model.classifier[6] = nn.Linear(in_features=4096, out_features=num_classes)
@@ -35,10 +45,10 @@ model = model.to(device)
 
 #Define Loss Function and Optimizer:
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.classifier[6].parameters(), lr=0.0001) # lr=0.001
+optimizer = optim.Adam(model.classifier[6].parameters(), lr=0.01) # lr=0.001
 
 #Train the Model:
-num_epochs = 100
+num_epochs = 50
 for epoch in range(num_epochs):
     model.train()
     running_loss = 0.0
