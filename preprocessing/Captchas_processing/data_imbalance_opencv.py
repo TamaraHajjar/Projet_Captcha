@@ -12,7 +12,8 @@ from glob import glob
 import re
 
 # Source folder
-source_folder = "C:/Users/MC/Desktop/PFE S5/Code/data/Train_Captchas_unsharp_masking_copy/"
+#source_folder = "C:/Users/MC/Desktop/PFE S5/Code/data/Train_Captchas_unsharp_masking_copy/"
+source_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_Copy/"
 
 ROTATION_ANGLES = [12 * i for i in range(1, 29)]  # [12, 24, 36, ..., 348]
 
