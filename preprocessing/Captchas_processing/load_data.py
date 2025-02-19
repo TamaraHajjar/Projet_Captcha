@@ -10,18 +10,30 @@ from torch.utils.data import Dataset
 
 def load_CAPTCHAS_TrainingSet(data_path):
     data = []
-    for classes in os.listdir(data_path):
-        for img in os.listdir(os.path.join(data_path,classes)):
-            img_path= os.path.join(data_path,classes,img)
-            try:
-                image = cv2.imread(img_path)
-                # Convert BGR image to RGB
-                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-                image_from_array = Image.fromarray(image, 'RGB')
-                #size_image = image_from_array.resize((224, 224))
-                data.append(image_from_array)
-            except AttributeError:
-                    print("Error loading image:", img)
+    # for classes in os.listdir(data_path):
+    #     for img in os.listdir(os.path.join(data_path,classes)):
+    #         img_path= os.path.join(data_path,classes,img)
+    #         try:
+    #             image = cv2.imread(img_path)
+    #             # Convert BGR image to RGB
+    #             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    #             image_from_array = Image.fromarray(image, 'RGB')
+    #             #size_image = image_from_array.resize((224, 224))
+    #             data.append(image_from_array)
+    #         except AttributeError:
+    #                 print("Error loading image:", img)
+    
+    for img_path in os.listdir((data_path)):
+        #img_path= os.path.join(data_path,classes,img)
+        try:
+            image = cv2.imread(img_path)
+            # Convert BGR image to RGB
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            image_from_array = Image.fromarray(image, 'RGB')
+            #size_image = image_from_array.resize((224, 224))
+            data.append(image_from_array)
+        except AttributeError:
+                print("Error loading image:", img_path)
     print("\n")    
     return data  # Return a list of PIL Image objects
 

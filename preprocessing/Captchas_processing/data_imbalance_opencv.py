@@ -11,6 +11,7 @@ import cv2
 import numpy as np
 from glob import glob
 import re
+from PIL import Image
 
 # Source folder
 #source_folder = "C:/Users/MC/Desktop/PFE S5/Code/data/Train_Captchas_unsharp_masking_copy/"
@@ -37,8 +38,11 @@ def rotate_image(image_path, angle):
     center = (w // 2, h // 2)
     matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
     rotated_img = cv2.warpAffine(img, matrix, (w, h))
-    return rotated_img
 
+    # Convert from OpenCV to PIL
+    rotated_img_rgb = cv2.cvtColor(rotated_img, cv2.COLOR_BGR2RGB) # Important: Convert color space
+    rotated_img_pil = Image.fromarray(rotated_img_rgb)
+    return rotated_img_pil
 
 def augment_images_to_target(subfolder_path, subfolder_name, target_count=200):
     # Get all image paths in the subfolder
@@ -70,7 +74,8 @@ def augment_images_to_target(subfolder_path, subfolder_name, target_count=200):
             rotated_img = rotate_image(img_path, random_angle)
             new_filename = f"{subfolder_name}_{next_number}.png"
             new_path = os.path.join(subfolder_path, new_filename)
-            cv2.imwrite(new_path, rotated_img)
+            rotated_img.save(new_path) # Save using PIL's save method
+            #cv2.imwrite(new_path, rotated_img)
             next_number += 1
             images_needed -= 1
             #rotation_index += 1
@@ -89,7 +94,8 @@ def augment_images_to_target(subfolder_path, subfolder_name, target_count=200):
         rotated_img = rotate_image(selected_image, random_angle)
         new_filename = f"{subfolder_name}_{next_number}.png"
         new_path = os.path.join(subfolder_path, new_filename)
-        cv2.imwrite(new_path, rotated_img)
+        rotated_img.save(new_path) # Save using PIL's save method
+        #cv2.imwrite(new_path, rotated_img)
         next_number += 1
         images_needed -= 1
         #rotation_index += 1

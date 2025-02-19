@@ -31,7 +31,7 @@ def compute_mean_std(dataset):
     return mean, std
 
 # Load dataset and compute mean/std
-dataset = LoadDataset('C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_UM_augmented_with_fct')
+dataset = LoadDataset('C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/segmented_captchas_median_filtering')
 mean, std = compute_mean_std(dataset)
 print(f"Mean: {mean.tolist()}, Std: {std.tolist()}")
 
