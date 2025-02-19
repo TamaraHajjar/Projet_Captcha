@@ -10,18 +10,18 @@ from torch.utils.data import Dataset
 
 def load_CAPTCHAS_TrainingSet(data_path):
     data = []
-    image_path = os.listdir(data_path)
-           
-    for img in image_path:
+    for classes in os.listdir(data_path):
+        for img in os.listdir(os.path.join(data_path,classes)):
+            img_path= os.path.join(data_path,classes,img)
             try:
-                image = cv2.imread(data_path + img)
+                image = cv2.imread(img_path)
                 # Convert BGR image to RGB
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 image_from_array = Image.fromarray(image, 'RGB')
-                size_image = image_from_array.resize((32, 32))
-                data.append(size_image)
+                #size_image = image_from_array.resize((224, 224))
+                data.append(image_from_array)
             except AttributeError:
-                print("Error loading image:", img)
+                    print("Error loading image:", img)
     print("\n")    
     return data  # Return a list of PIL Image objects
 
@@ -31,7 +31,7 @@ def LoadDataset(path):
     
     # Apply transformations: ToTensor, Normalize
     transform_train = transforms.Compose([
-        transforms.Grayscale(num_output_channels=1),  # Convert RGB to grayscale
+        #transforms.Grayscale(num_output_channels=1),  # Convert RGB to grayscale
         transforms.ToTensor(),  # Converts PIL Image to Tensor
     ])
     

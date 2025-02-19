@@ -27,6 +27,7 @@ def extract_circles(image_path):
     
     offset_x, offset_y = 3, 3
     num_rows, num_cols = 3, 5
+    #num_rows, num_cols = 1, 1
 
     count = 0
     for row in range(num_rows):
@@ -42,7 +43,7 @@ def extract_circles(image_path):
 
             # Save each extracted circle with the original filename prefix
             count += 1
-            if not os.path.exists("test_seg"):
+            if not os.path.exists("C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/datatest_seg"):
                 os.makedirs("test_seg")  # Create the directory if it doesn't exist
             cv2.imwrite(f"test_seg/{filename}_circle_{count}.png", circle_image)
             
@@ -50,7 +51,7 @@ def extract_circles(image_path):
             #cv2.rectangle(image, (x1, y1), (x2, y2), (0, 128, 255), 1)
 
 if __name__ == "__main__":
-    files = Path("C:/Users/MC/Desktop/PFE S5/Code/data/abacus_captcha_imgs").glob("*.png")
+    files = Path("C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_UM_augmented_with_fct/airplane").glob("*.png")
 
     for fpath in files:
         extract_circles(str(fpath))  # Convert to string if needed

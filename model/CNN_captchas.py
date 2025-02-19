@@ -14,7 +14,7 @@ cpudevice = torch.device("cpu")  # move to the CPU
 
 # Define Data Transformations: Utilize torchvision.transforms for data augmentation and normalization.
 transform = transforms.Compose([
-    transforms.Resize((32, 32)),
+    transforms.Resize((224, 224)),
     #transforms.RandomHorizontalFlip(),
     transforms.RandomRotation(12), # ici je dois voir si je peux faire des rotations dans un intervalle, dont les valeurs sont celles utilisées par les concepteurs de ABACUS
     transforms.ToTensor(),
@@ -42,7 +42,7 @@ for param in model.parameters():
     param.requires_grad = False
 model.classifier[6] = nn.Linear(in_features=4096, out_features=num_classes)
 model = model.to(device)
-
+model.fc = 
 #Define Loss Function and Optimizer:
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.classifier[6].parameters(), lr=0.01) # lr=0.001

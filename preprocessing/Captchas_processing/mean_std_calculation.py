@@ -3,39 +3,37 @@
 J'avais utilisé ce code pour calculer le mean et std des images des captchas que j'ai
 transformés en grayscale
 
-
 '''
 import torch
-from torchvision import datasets, transforms
+from torchvision import transforms
 from torch.utils.data import DataLoader
 import numpy as np
 from load_data import LoadDataset
 
-# >-------------------------------------------------------<
-#ICI J'AI CALCULER LE MEAN ET STD DES CAPTCHAS EN GRAYSCALE
-# >-------------------------------------------------------<
-
-# Compute mean and std for grayscale
+# Compute mean and std for RGB images
 def compute_mean_std(dataset):
-    mean = 0.
-    std = 0.
+    mean = torch.zeros(3)
+    std = torch.zeros(3)
     total_images = len(dataset)
     
-    # Loop through the dataset to accumulate pixel values
+    # Loop through dataset to accumulate pixel values per channel
     for image in dataset:
-        mean += image.mean()  # Compute mean for grayscale (only 1 channel)
-        std += image.std()  # Compute std for grayscale (only 1 channel)
-
-    # Average the computed mean and std
+        if isinstance(image, tuple):  # If dataset returns (image, label), extract only image
+            image = image[0]
+        
+        mean += torch.tensor([image[:, :, i].mean() for i in range(3)])
+        std += torch.tensor([image[:, :, i].std() for i in range(3)])
+    
+    # Compute average for each channel
     mean /= total_images
     std /= total_images
     
     return mean, std
 
 # Load dataset and compute mean/std
-dataset = LoadDataset('C:/Users/MC/Desktop/PFE S5/Code/segmented_captchas/')
+dataset = LoadDataset('C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_UM_augmented_with_fct')
 mean, std = compute_mean_std(dataset)
-print(f"Mean: {mean.item()}, Std: {std.item()}")
+print(f"Mean: {mean.tolist()}, Std: {std.tolist()}")
 
-#Mean: 0.3511512577533722, Std: 0.2554815113544464
-#Mean: 0.35115125, Std: 0.25548151
+#Mean_gray: 0.3511512577533722, Std: 0.2554815113544464
+#Mean_gray: 0.35115125, Std: 0.25548151
