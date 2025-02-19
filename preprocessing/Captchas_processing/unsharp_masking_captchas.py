@@ -19,8 +19,8 @@ def unsharp_masking(img_path, radius, amount):
     return img_sharp
 
 # Source and destination folders
-source_folder = "C:/Users/MC/Desktop/PFE S5/Code/data/Train_Captchas/"
-destination_folder = "C:/Users/MC/Desktop/PFE S5/Code/data/Train_Captchas_unsharp_masking/"
+source_folder = "C:/Users/MC/Desktop/PFE S5/Code/data/second_median_filtering/"
+destination_folder = "C:/Users/MC/Desktop/PFE S5/Code/data/second_median_filtering_unsharp_masking/"
 
 # Get a list of all image files in subdirectories
 image_paths = glob(os.path.join(source_folder, "**", "*.png"), recursive=True)
