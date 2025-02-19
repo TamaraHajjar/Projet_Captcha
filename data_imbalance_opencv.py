@@ -1,6 +1,7 @@
 # --------------------------- CODE BIEN ---------------------------
 '''
 Ce code marche très bien avec des images OpenCV.
+Le résultat de ce code est directement sauvegarder dans le folder en entrée 
 Une autre version sera pour le format d'images PIL
 '''
 import os
@@ -13,7 +14,7 @@ import re
 
 # Source folder
 #source_folder = "C:/Users/MC/Desktop/PFE S5/Code/data/Train_Captchas_unsharp_masking_copy/"
-source_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_Copy/"
+source_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_UM_CC_DataAug/"
 
 ROTATION_ANGLES = [12 * i for i in range(1, 29)]  # [12, 24, 36, ..., 348]
 
