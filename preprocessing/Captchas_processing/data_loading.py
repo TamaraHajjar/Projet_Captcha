@@ -3,7 +3,7 @@ import os
 from PIL import Image
 import torch
 import torchvision.transforms as transforms
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, random_split, Subset
 
 dataset_path = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_UM_augmented_with_fct"
 
@@ -25,9 +25,9 @@ def get_dict_labels(dataset_path):
     return classes_dict
 #-----------------------------------------------------------------------------------
 
-def load_CAPTCHAS_TrainingSet(dataset_path):
-    train_images=[]
-    train_labels=[]
+def load_CAPTCHAS_DatasetSet(dataset_path):
+    data_images=[]
+    data_labels=[]
 
     labels_dict = get_dict_labels(dataset_path)
 
@@ -39,36 +39,104 @@ def load_CAPTCHAS_TrainingSet(dataset_path):
 
             image = cv2.imread(img_path)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            train_images.append(image)
-            train_labels.append(labels_dict[classes])
+            data_images.append(image)
+            data_labels.append(labels_dict[classes])
 
-    train_labels=torch.LongTensor(train_labels)
-    train_images=torch.FloatTensor(train_images)
+    data_labels=torch.LongTensor(data_labels)
+    #data_images=torch.FloatTensor(data_images)
+    data_images = torch.tensor(np.array(data_images), dtype=torch.float32)
 
     # normalizing the dataset
-    train_images=train_images/255
+    data_images=data_images/255
 
     # shuffeling the training dataset
-    num_samples = train_images.size(0)
+    num_samples = data_images.size(0)
     indices = torch.randperm(num_samples)
-    train_images = train_images[indices]
-    train_labels = train_labels[indices]
+    data_images = data_images[indices]
+    data_labels = data_labels[indices]
 
-    train_images=train_images.permute(0,3,1,2)  # CNN expects input in the format (batch_size, channels, height, width). 
+    data_images=data_images.permute(0,3,1,2)  # CNN expects input in the format (batch_size, channels, height, width). 
 
-    return train_images, train_labels
+    return data_images, data_labels
 #-----------------------------------------------------------------------------------
 
 def LoadDataset(dataset_path):
     # Load dataset from images
-    x_train, y_train = load_CAPTCHAS_TrainingSet(dataset_path)
-    
-    # Apply transformations: ToTensor, Normalize
-    transform_train = transforms.Compose([
-        #transforms.Grayscale(num_output_channels=1),  # Convert RGB to grayscale
-        transforms.ToTensor(),  # Converts PIL Image to Tensor
+    x_data, y_data = load_CAPTCHAS_DatasetSet(dataset_path)
+
+    # Apply transformations: Resize, Rotation, ToTensor, Normalize
+    transform_data = transforms.Compose([
+        transforms.Resize((224, 224), antialias=True),
+        transforms.RandomRotation(144),  # Any multiple of 12
+        #transforms.ToTensor(),
+        transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Normalize
     ])
+
+    # Create dataset
+    full_dataset = CustomDataset(x_data, y_data, transform=transform_data)
+
+    # Define split ratios
+    train_ratio = 0.7
+    val_ratio = 0.15
+    test_ratio = 0.15
+
+    # Compute split sizes
+    total_size = len(full_dataset)
+    train_size = int(train_ratio * total_size)
+    val_size = int(val_ratio * total_size)
+    test_size = total_size - train_size - val_size  # Ensure total matches
+
+    # Split dataset
+    train_subset, val_subset, test_subset = random_split(full_dataset, [train_size, val_size, test_size])
+
+    # Convert to SubsetToDataset for easy access to data & labels
+    train_dataset = SubsetToDataset(train_subset)
+    val_dataset = SubsetToDataset(val_subset)
+    test_dataset = SubsetToDataset(test_subset)
+
+    return train_dataset, val_dataset, test_dataset
+#-----------------------------------------------------------------------------------
+
+class CustomDataset(Dataset):
+    def __init__(self, images, labels, transform=None):
+        self.images = images
+        self.labels = labels
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, index):
+        image = self.images[index]
+        label = self.labels[index]
+
+        if self.transform:
+            image = self.transform(image)
+        return image, label
+#-----------------------------------------------------------------------------------
+#   
+class SubsetToDataset(Dataset):
+    def __init__(self, subset):
+        self.subset = subset
+        self.dataset = subset.dataset
+        self.indices = subset.indices
+        
+        # Collect and store the data and labels corresponding to the subset indices
+        self.train_data, self.data_labels = self._collect_data_and_labels()
+
+    def __len__(self):
+        return len(self.indices)
+
+    def __getitem__(self, idx):
+        actual_idx = self.indices[idx]
+        return self.dataset[actual_idx]
     
-    train_data = CustomDataset(x_train, transform=transform_train)
-    
-    return train_data # in train_data images are tensors
+    def _collect_data_and_labels(self):
+        datas = []
+        lbls = []
+        for idx in self.indices:
+            image, label = self.dataset[idx]
+            datas.append(image)
+            lbls.append(label)
+        return torch.stack(datas), torch.tensor(lbls)
+
