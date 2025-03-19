@@ -2,8 +2,6 @@
 '''
 3ème étape
 Ce code est pour appliquer le unsharp mask sur toutes les images segmentées des captchas
-Résultat dans le folder Train_Captchas_unsharp_masking
-Type des I/O: Reads images using OpenCV, applies transformations, and saves using Matplotlib's imsave().
 '''
 import numpy as np
 from PIL import Image

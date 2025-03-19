@@ -2,8 +2,6 @@
 '''
 2ème étape
 Ce code est pour appliquer le median filtering sur toutes les images segmentées des captchas
-Résultat dans le folder segmented_captchas_median_filtering
-Type des I/O: Opens images as PIL images, applies transformations, and converts back to PIL before saving.
 '''
 
 import cv2

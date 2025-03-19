@@ -6,7 +6,6 @@ Les 15 images ainsi obtenues sont ensuite aussi rognées sous forme de cercles
 
 Cette étape est nécessaire pour s'affranchir des larges zones noires inutiles dans l'img
 et que le modèle de deep learning puisse apprendre correctement
-Résultat dans le folder extracted_circles
 Version finale de la segmentation
 '''
 

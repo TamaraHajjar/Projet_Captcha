@@ -2,7 +2,6 @@
 '''
 Ce code marche très bien avec des images OpenCV.
 Le résultat de ce code est directement sauvegarder dans le folder en entrée 
-Une autre version sera pour le format d'images PIL
 '''
 import os
 import random
