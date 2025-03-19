@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 #To implement an object recognition CAPTCHA classifier using a Convolutional Neural Network (CNN) based on the VGG architecture in PyTorch, follow these steps:
 
 #Import Necessary Libraries:
@@ -6,86 +8,123 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms, models
+from tqdm import tqdm
+from preprocessing.Captchas_processing.data_loading import LoadDataset
+from model.vgg16 import selectModelandTrainingParameters
+from config.settings import NUM_CLASSES, DEVICE, NUM_EPOCHS
 
-# Set device (CPU or GPU)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+import matplotlib.pyplot as plt
+import torchvision.utils as vutils
 
-cpudevice = torch.device("cpu")  # move to the CPU
 
-# Define Data Transformations: Utilize torchvision.transforms for data augmentation and normalization.
-transform = transforms.Compose([
-    transforms.Resize((224, 224)),
-    #transforms.RandomHorizontalFlip(),
-    transforms.RandomRotation(12), # ici je dois voir si je peux faire des rotations dans un intervalle, dont les valeurs sont celles utilisées par les concepteurs de ABACUS
-    transforms.ToTensor(),
-    #transforms.ColorJitter(brightness=0.5, contrast=1, saturation=0.1, hue=0.5),
-    #transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-])
+#dataset_path = '/home/elhajjta/Projet/data/Train_Captchas_UM_CC_DataAug/'
+dataset_path = 'C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_UM_CC_DataAug'
+# Load dataset and split into train, validation, and test sets
+train_dataset, val_dataset, test_dataset = LoadDataset(dataset_path)
 
-#Prepare the Dataset: Use ImageFolder to load your dataset, ensuring it's organized into subdirectories for each class.
-ds_path = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_UM_augmented_with_fct/"
-dataset = datasets.ImageFolder(root=ds_path, transform=transform)
-train_size = int(0.8 * len(dataset))
-val_size = len(dataset) - train_size
-train_dataset, val_dataset = torch.utils.data.random_split(dataset, [train_size, val_size])
-
-#Create Data Loaders:
+# Create Data Loaders
 train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=64, shuffle=False)
+test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
 
-#Define the number of CAPTCHA categories
-num_classes = 23
+print('/nloading data done.../n')
+
+# Get a batch of images
+dataiter = iter(train_loader)
+images, labels = next(dataiter)
+
+# Display images
+plt.figure(figsize=(10, 5))
+plt.axis("off")
+plt.title("Sample Training Images")
+plt.imshow(vutils.make_grid(images[:8], nrow=4).permute(1, 2, 0))  # Show first 8 images
+plt.show()
+
+
 #Load Pre-trained VGG16 Model:
-  
-model = models.vgg16(weights=models.VGG16_Weights.DEFAULT)
+model, criterion, optimizer = selectModelandTrainingParameters()
+
+# Geler tous les paramètres
 for param in model.parameters():
     param.requires_grad = False
-model.classifier[6] = nn.Linear(in_features=4096, out_features=num_classes)
-model = model.to(device)
-model.fc = 
-#Define Loss Function and Optimizer:
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.classifier[6].parameters(), lr=0.01) # lr=0.001
+
+# Unfreeze Block 4 
+for i, layer in enumerate(model.features):
+    if isinstance(layer, nn.Conv2d) and 24 <= i <= 28:
+        for param in layer.parameters():
+            param.requires_grad = True
+
+# Décongeler les paramètres de la dernière couche
+for param in model.classifier.parameters():
+    param.requires_grad = True
+
+print('Start training...')
 
 #Train the Model:
-num_epochs = 50
-for epoch in range(num_epochs):
+for epoch in range(NUM_EPOCHS):
     model.train()
-    running_loss = 0.0
-    correct = 0
-    total = 0
-    for inputs, labels in train_loader:
-        inputs, labels = inputs.to(device), labels.to(device)
+    train_loss = 0.0
+    train_correct = 0
+    train_total = 0
+
+    for inputs, labels in tqdm(train_loader, desc=f"Epoch {epoch + 1}/{NUM_EPOCHS}"):
+        inputs, labels = inputs.to(DEVICE), labels.to(DEVICE)
         optimizer.zero_grad()
         outputs = model(inputs)
         loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
-        running_loss += loss.item()
-        _, predicted = torch.max(outputs, 1)
-        total += labels.size(0)
-        correct += (predicted == labels).sum().item()
-    epoch_loss = running_loss / len(train_loader)
-    epoch_acc = correct / total
-    print(f'Epoch {epoch+1}/{num_epochs}, Loss: {epoch_loss:.4f}, Accuracy: {epoch_acc:.4f}')
 
-#Evaluate the Model:
+        train_loss += loss.item() * inputs.size(0)
+        _, predicted = torch.max(outputs, 1)
+        train_total += labels.size(0)
+        train_correct += (predicted == labels).sum().item()
+
+    epoch_loss = train_loss / len(train_loader.dataset)
+    epoch_acc = 100 * (train_correct / train_total)
+    print(f'Epoch {epoch+1}/{NUM_EPOCHS}, Loss: {epoch_loss:.4f}, Accuracy: {epoch_acc:.2f}')
+
+    #scheduler.step()
+
+# Evaluate the Model on Validation Set
 model.eval()
-correct = 0
-total = 0
+val_correct = 0
+val_total = 0
+val_loss = 0.0
+
 with torch.no_grad():
-    for inputs, labels in val_loader:
-        inputs, labels = inputs.to(device), labels.to(device)
+    for inputs, labels in tqdm(val_loader, desc="Evaluating on Validation Set"):
+        inputs, labels = inputs.to(DEVICE), labels.to(DEVICE)
         outputs = model(inputs)
+        loss = criterion(outputs, labels)
+
+        val_loss += loss.item() * inputs.size(0)
         _, predicted = torch.max(outputs, 1)
-        total += labels.size(0)
-        correct += (predicted == labels).sum().item()
-val_acc = correct / total
-print(f'Validation Accuracy: {val_acc:.4f}')
+        val_total += labels.size(0)
+        val_correct += (predicted == labels).sum().item()
 
-#Notes:
+val_acc = 100* (val_correct / val_total)
+val_loss = val_loss / len(val_loader.dataset)
+print(f'Validation Loss: {val_loss:.4f}, Validation Accuracy: {val_acc:.2f}')
 
-# Replace 'path_to_dataset' with the actual path to your dataset.
-# Set num_classes to the number of CAPTCHA categories.
-# Ensure your dataset is organized into subdirectories for each class within the main dataset directory.
-# Adjust hyperparameters such as learning rates, batch size, and the number of epochs based on your dataset's specifics and computational resources.
+# Final Test Evaluation
+test_correct = 0
+test_total = 0
+test_loss = 0.0
+
+with torch.no_grad():
+    for inputs, labels in tqdm(test_loader, desc="Evaluating on Test Set"):
+        inputs, labels = inputs.to(DEVICE), labels.to(DEVICE)
+        outputs = model(inputs)
+        #print(f'outputs: {outputs}')
+        loss = criterion(outputs, labels)
+
+        test_loss += loss.item() * inputs.size(0)
+        _, predicted = torch.max(outputs, 1)
+        #print(f'predicted : {predicted}')
+        test_total += labels.size(0)
+        test_correct += (predicted == labels).sum().item()
+
+test_acc = 100 * (test_correct / test_total)
+test_loss = test_loss / len(test_loader.dataset)
+print(f'Test Loss: {test_loss:.4f}, Test Accuracy: {test_acc:.2f}')

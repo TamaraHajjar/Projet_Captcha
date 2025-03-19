@@ -89,8 +89,8 @@ def process_image_for_luminance(image_path):
     img_final.save(image_path)
 
 def main():
-    source_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/abacus_captcha_imgs"
-    output_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/datatest_seg"  # This is where the circles will be saved
+    source_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/one_img_seg"
+    output_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/one_img_seg"  # This is where the circles will be saved
 
     # Loop through the source folder and extract circles
     files = Path(source_folder).glob("*.png")

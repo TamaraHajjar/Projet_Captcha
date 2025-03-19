@@ -4,6 +4,7 @@ from PIL import Image
 import torch
 import torchvision.transforms as transforms
 from torch.utils.data import Dataset, random_split, Subset
+import numpy as np
 
 dataset_path = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_UM_augmented_with_fct"
 
@@ -68,7 +69,6 @@ def LoadDataset(dataset_path):
     transform_data = transforms.Compose([
         transforms.Resize((224, 224), antialias=True),
         transforms.RandomRotation(144),  # Any multiple of 12
-        #transforms.ToTensor(),
         transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])  # Normalize
     ])
 

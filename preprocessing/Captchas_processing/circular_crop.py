@@ -15,10 +15,12 @@ import os
 from glob import glob
 
 # Folder with images after unsharp masking (contains subfolders)
-source_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_unsharp_masking/"
+#source_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_unsharp_masking/"
+source_folder = "C:/Users/MC/Desktop/PFE S5/figures_article/"
 
 # Folder where the processed images will be saved
-destination_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_UM_Circular_Crop/"
+#destination_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_UM_Circular_Crop/"
+destination_folder = "C:/Users/MC/Desktop/PFE S5/figures_article/"
 
 # Create the destination folder if it doesn't exist
 os.makedirs(destination_folder, exist_ok=True)
