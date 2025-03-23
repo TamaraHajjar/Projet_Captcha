@@ -1,5 +1,5 @@
 # DArk WEb CAptchas: An Approach To Break Dark Web Object Recognition CAPTCHAs
-Web Object Recognition CAPTCHAs
+
 This project aims to develop a deep learning-based classifier for object recognition CAPTCHAs in the Abacus dataset.
 
 Abacus is a hybrid collection of CAPTCHA images gathered from the Dark Web, divided into two distinct categories: object recognition CAPTCHAs and text-based CAPTCHAs.
