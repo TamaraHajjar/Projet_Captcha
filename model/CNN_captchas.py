@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 #To implement an object recognition CAPTCHA classifier using a Convolutional Neural Network (CNN) based on the VGG architecture in PyTorch, follow these steps:
 
 #Import Necessary Libraries:
@@ -16,9 +14,7 @@ from config.settings import NUM_CLASSES, DEVICE, NUM_EPOCHS
 import matplotlib.pyplot as plt
 import torchvision.utils as vutils
 
-
-#dataset_path = '/home/elhajjta/Projet/data/Train_Captchas_UM_CC_DataAug/'
-dataset_path = 'C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_UM_CC_DataAug'
+dataset_path = 'C:/Users/data/Train_Captchas_UM_CC_DataAug'
 # Load dataset and split into train, validation, and test sets
 train_dataset, val_dataset, test_dataset = LoadDataset(dataset_path)
 
