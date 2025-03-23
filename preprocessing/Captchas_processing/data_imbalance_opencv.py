@@ -1,6 +1,7 @@
 # --------------------------- CODE BIEN ---------------------------
 '''
-Ce code marche très bien avec des images OpenCV.
+Ce code gère le data imbalance dans les classes en créant des verisons rotationnées
+de l'image d'origine.
 Le résultat de ce code est directement sauvegarder dans le folder en entrée 
 '''
 import os
@@ -13,8 +14,7 @@ import re
 from PIL import Image
 
 # Source folder
-#source_folder = "C:/Users/MC/Desktop/PFE S5/Code/data/Train_Captchas_unsharp_masking_copy/"
-source_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_UM_CC_DataAug/"
+source_folder = "C:/Users/data/Train_Captchas_UM_CC_DataAug/" 
 
 ROTATION_ANGLES = [12 * i for i in range(1, 29)]  # [12, 24, 36, ..., 348]
 

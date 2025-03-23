@@ -6,7 +6,7 @@ import torchvision.transforms as transforms
 from torch.utils.data import Dataset, random_split, Subset
 import numpy as np
 
-dataset_path = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_UM_augmented_with_fct"
+dataset_path = "C:/Users/Train_Captchas_UM_augmented_with_fct"
 
 #-----------------------------------------------------------------------------------
 def get_dict_labels(dataset_path):

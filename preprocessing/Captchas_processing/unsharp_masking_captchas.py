@@ -30,10 +30,8 @@ transform_unsharp_mask = transforms.Compose([
 ])
 
 # Source and destination folders
-#source_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas/"
-source_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/one_img_seg/median_filtering/"
-#destination_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_unsharp_masking_test/"
-destination_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/unsharp_masking/"
+source_folder = "C:/Users/data/one_img_seg/median_filtering/"
+destination_folder = "C:/Users/data/unsharp_masking/"
 
 
 # Create the destination folder if it doesn't exist
