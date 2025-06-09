@@ -8,6 +8,6 @@ To build an effective classifier, object recognition CAPTCHAs require preprocess
 
 As part of this project, we introduce DaWeCa, a comprehensive approach that integrates advanced preprocessing techniques and a fine-tuned convolutional neural network (CNN) to accurately classify CAPTCHA images.
 
-The proposed method outperforms state-of-the-art approaches, # achieving an accuracy rate close to 99%, demonstrating its effectiveness in solving object recognition CAPTCHAs.
+The proposed method outperforms state-of-the-art approaches, ** achieving an accuracy rate close to 99% **, demonstrating its effectiveness in solving object recognition CAPTCHAs.
 
 
