@@ -1,4 +1,3 @@
-# --------------------------- CODE BIEN ---------------------------
 '''
 3ème étape
 Ce code est pour appliquer le unsharp mask sur toutes les images segmentées des captchas

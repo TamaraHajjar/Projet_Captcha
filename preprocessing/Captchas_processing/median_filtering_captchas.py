@@ -30,19 +30,13 @@ class MedianFilterTransform:
         return Image.fromarray(img)  # Convert back to PIL image
 
 transform_median = transforms.Compose([
-    MedianFilterTransform(kernel_size=7),
+    MedianFilterTransform(kernel_size=3),
     transforms.ToTensor(),
     ])
 
 # Define source and destination folders
-# source_folder = "C:/Users/MC/Desktop/PFE S5/Code/data/segmented_captchas/"
-# destination_folder = "C:/Users/MC/Desktop/PFE S5/Code/segmented_captchas_kernel_5_median_filtering/"
-
-# source_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/Train_Captchas_Copy/"
-# destination_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/second_median_filtering/"
-
-source_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/one_img_seg/test"
-destination_folder = "C:/Users/MC/Desktop/PFE S5/data_in_folder_Code/data/one_img_seg/compare_median/"
+source_folder = "C:/Users/data/one_img_seg/test"
+destination_folder = "C:/Users/data/one_img_seg/compare_median/"
 
 # Create the destination folder if it doesn't exist
 os.makedirs(destination_folder, exist_ok=True)

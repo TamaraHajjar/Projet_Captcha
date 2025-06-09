@@ -1,4 +1,3 @@
-# --------------------------- CODE BIEN ---------------------------
 '''
 1ère étape:
 Ce fichier est pour segmenter les captchas en 15 mini images

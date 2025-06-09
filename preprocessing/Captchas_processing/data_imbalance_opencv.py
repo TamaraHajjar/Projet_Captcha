@@ -1,4 +1,3 @@
-# --------------------------- CODE BIEN ---------------------------
 '''
 Ce code gère le data imbalance dans les classes en créant des verisons rotationnées
 de l'image d'origine.

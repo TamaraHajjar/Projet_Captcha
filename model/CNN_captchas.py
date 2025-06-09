@@ -29,18 +29,19 @@ print('/nloading data done.../n')
 dataiter = iter(train_loader)
 images, labels = next(dataiter)
 
+'''
 # Display images
 plt.figure(figsize=(10, 5))
 plt.axis("off")
 plt.title("Sample Training Images")
 plt.imshow(vutils.make_grid(images[:8], nrow=4).permute(1, 2, 0))  # Show first 8 images
 plt.show()
-
+'''
 
 #Load Pre-trained VGG16 Model:
 model, criterion, optimizer = selectModelandTrainingParameters()
 
-# Geler tous les paramètres
+# Freeze all parameters
 for param in model.parameters():
     param.requires_grad = False
 
@@ -79,8 +80,6 @@ for epoch in range(NUM_EPOCHS):
     epoch_loss = train_loss / len(train_loader.dataset)
     epoch_acc = 100 * (train_correct / train_total)
     print(f'Epoch {epoch+1}/{NUM_EPOCHS}, Loss: {epoch_loss:.4f}, Accuracy: {epoch_acc:.2f}')
-
-    #scheduler.step()
 
 # Evaluate the Model on Validation Set
 model.eval()
